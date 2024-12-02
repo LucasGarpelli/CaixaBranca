@@ -1,64 +1,41 @@
-# Caixa-Branca
+Caixa-Branca
+Descrição
+Este projeto consiste em duas classes principais:
 
-Possíveis Erros e Melhorias
-1. Classe do Driver MySQL
-Erro:
-Class.forName("com.mysql.Driver.Manager").newInstance();
+User.java: Contém métodos para estabelecer conexão com o banco de dados e verificar se um usuário existe.
+Teste.java: Classe de teste para verificar o funcionamento dos métodos da classe User.
+Como Executar
+Passo 1: Criar o Banco de Dados
+Execute os seguintes comandos SQL para configurar o banco de dados:
 
-Correção:
-Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-Descrição:
-A classe especificada para o driver MySQL está incorreta. A classe correta é com.mysql.cj.jdbc.Driver.
+Criação do Banco de Dados
+CREATE DATABASE teste;
+    
+Criação da Tabela usuarios
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    login VARCHAR(50) NOT NULL,
+    senha VARCHAR(50) NOT NULL,
+    nome VARCHAR(100) NOT NULL
+);
+    
+Passo 2: Inserir Dados no Banco de Dados
+Adicione os seguintes dados ao banco de dados:
 
-2. String de Conexão
-Erro:
-String url = "jdbc:mysql://127.0.0.1/test?user=lopes&password=123";
+INSERT INTO usuarios (login, senha, nome) VALUES ('Zhefiroth', '1234', 'Matheus');
+    
+Passo 3: Configurar a URL de Conexão
+Atualize a URL no código para apontar para o seu banco de dados:
 
-Correção:
-Evitar armazenar credenciais diretamente no código.
+"jdbc:mysql://127.0.0.1/Nome_do_seu_Banco_de_Dados?user=Seu_usuario_do_MYSQL&password=Sua_senha"
+    
+Passo 4: Baixar o Driver MySQL
+Faça o download do driver JDBC MySQL no site:
 
-Descrição:
-Armazenar credenciais de banco de dados diretamente no código pode levar a problemas de segurança. Recomenda-se usar arquivos de configuração ou variáveis de ambiente para armazenar credenciais.
+https://dev.mysql.com/downloads/connector/j/
+Selecione a opção Platform Independent e faça o download do arquivo Platform Independent (Architecture Independent), ZIP Archive.
 
-3. Tratamento de Exceções
-Erro:
-catch (Exception e) { }
+Extraia o arquivo ZIP, localize o JAR mysql-connector-j-9.1.0.jar e adicione-o ao seu projeto.
 
-Correção:
-catch (Exception e) {
-    e.printStackTrace();
-}
-
-Descrição:
-As exceções estão sendo capturadas, mas não tratadas nem registradas. Adicionar logging para capturar as exceções facilita a identificação de erros.
-
-4. Recurso Não Fechado
-Erro:
-A conexão ao banco de dados (conn) e o Statement não são fechados após o uso.
-
-Correção:
-finally {
-    try {
-        if (rs != null) rs.close();
-        if (st != null) st.close();
-        if (conn != null) conn.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-Descrição:
-Não fechar recursos de banco de dados pode levar a vazamento de recursos e problemas de desempenho.
-
-5. Concatenando Strings para SQL
-Erro:
-sql += "select nome from usuarios where login = '" + login + "' and senha = '" + senha + "';";
-
-Correção:
-String sql = "select nome from usuarios where login = ? and senha = ?";
-PreparedStatement pstmt = conn.prepareStatement(sql);
-pstmt.setString(1, login);
-pstmt.setString(2, senha);
-ResultSet rs = pstmt.executeQuery();
-Descrição:
-Concatenar strings diretamente para criar consultas SQL pode levar a vulnerabilidades de injeção de SQL. Usar PreparedStatement para prevenir essas vulnerabilidades.
+Passo 5: Executar o Projeto
+Após seguir os passos acima, o projeto estará funcionando corretamente.
