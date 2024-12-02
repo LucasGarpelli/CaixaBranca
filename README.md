@@ -1,64 +1,124 @@
 # Caixa-Branca
 
-Possíveis Erros e Melhorias
-1. Classe do Driver MySQL
-Erro:
-Class.forName("com.mysql.Driver.Manager").newInstance();
+![image](https://github.com/user-attachments/assets/57916b6a-3cb1-4ada-b6e3-c168f6d00588)
 
-Correção:
-Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-Descrição:
-A classe especificada para o driver MySQL está incorreta. A classe correta é com.mysql.cj.jdbc.Driver.
+<h2>Estrutura de Nós e Caminhos</h2>
 
-2. String de Conexão
-Erro:
-String url = "jdbc:mysql://127.0.0.1/test?user=lopes&password=123";
+<h3>Nós</h3>
 
-Correção:
-Evitar armazenar credenciais diretamente no código.
-
-Descrição:
-Armazenar credenciais de banco de dados diretamente no código pode levar a problemas de segurança. Recomenda-se usar arquivos de configuração ou variáveis de ambiente para armazenar credenciais.
-
-3. Tratamento de Exceções
-Erro:
-catch (Exception e) { }
-
-Correção:
-catch (Exception e) {
-    e.printStackTrace();
+<ul>
+    <li>
+        <strong>Nodo 1 (Início do Método Conexão)</strong>
+        <pre>
+public class User {
+    public Connection conectarBD() {
+        Connection conn = null;
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 2 (Carregar Driver e Conectar ao Banco de Dados)</strong>
+        <pre>
+try {
+    Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+    String url = "jdbc:mysql://127.0.0.1/teste?user=root&password=1234";
+    conn = DriverManager.getConnection(url);
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 3 (Tratamento de Exceção)</strong>
+        <pre>
+} catch (Exception e) {
 }
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 4 (Retorno da Conexão)</strong>
+        <pre>
+return conn;
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 5 (Atributos e Método de Verificação)</strong>
+        <pre>
+public String nome = "";
 
-Descrição:
-As exceções estão sendo capturadas, mas não tratadas nem registradas. Adicionar logging para capturar as exceções facilita a identificação de erros.
+public boolean result = false;
 
-4. Recurso Não Fechado
-Erro:
-A conexão ao banco de dados (conn) e o Statement não são fechados após o uso.
+public boolean verificarUsuario(String login, String senha) {
 
-Correção:
-finally {
-    try {
-        if (rs != null) rs.close();
-        if (st != null) st.close();
-        if (conn != null) conn.close();
-    } catch (Exception e) {
-        e.printStackTrace();
+    String sql = "";
+    Connection conn = conectarBD();
+
+    // INSTRUÇÃO SQL
+    sql = "select nome from usuarios ";
+    sql += "where login = '" + login + "' ";
+    sql += "and senha = '" + senha + "';";
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 6 (Executar Consulta SQL)</strong>
+        <pre>
+try {
+    Statement st = conn.createStatement();
+    ResultSet rs = st.executeQuery(sql);
+    if (rs.next()) {
+        result = true;
+        nome = rs.getString("nome");
     }
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 7 (Tratamento de Exceção)</strong>
+        <pre>
+} catch (Exception e) {
 }
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 8 (Validação de Resultados)</strong>
+        <pre>
+if (rs.next()) {
+    result = true;
+    nome = rs.getString("nome");
+}
+        </pre>
+    </li>
+    <li>
+        <strong>Nodo 9 (Retorno do Resultado da Verificação)</strong>
+        <pre>
+return result;
+        </pre>
+    </li>
+</ul>
 
-Descrição:
-Não fechar recursos de banco de dados pode levar a vazamento de recursos e problemas de desempenho.
+<h3>Caminhos e Conta dos Caminhos</h3>
 
-5. Concatenando Strings para SQL
-Erro:
-sql += "select nome from usuarios where login = '" + login + "' and senha = '" + senha + "';";
+<ul>
+    <li><strong>C1</strong> = Nodo 1, Nodo 2, Nodo 4, Nodo 5, Nodo 6, Nodo 8, Nodo 9</li>
+    <li><strong>C2</strong> = Nodo 1, Nodo 3</li>
+    <li><strong>C3</strong> = Nodo 1, Nodo 2, Nodo 4, Nodo 5, Nodo 7</li>
+</ul>
 
-Correção:
-String sql = "select nome from usuarios where login = ? and senha = ?";
-PreparedStatement pstmt = conn.prepareStatement(sql);
-pstmt.setString(1, login);
-pstmt.setString(2, senha);
-ResultSet rs = pstmt.executeQuery();
-Descrição:
-Concatenar strings diretamente para criar consultas SQL pode levar a vulnerabilidades de injeção de SQL. Usar PreparedStatement para prevenir essas vulnerabilidades.
+<h3>Complexidade Ciclomática</h3>
+
+<p>
+    A fórmula para calcular a complexidade ciclomática é:
+</p>
+
+<pre>
+V(G) = E - N + 2
+</pre>
+
+<ul>
+    <li>E = 9 (número de arestas)</li>
+    <li>N = 8 (número de nós)</li>
+</ul>
+
+<p>
+    Aplicando a fórmula:
+</p>
+
+<pre>
+V(G) = 9 - 8 + 2
+V(G) = 3
+</pre>
